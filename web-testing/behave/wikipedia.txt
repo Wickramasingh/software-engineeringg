@@ -1,0 +1,5 @@
+Feature 1:
+
+when we navigate to the wikipedia main page
+and we enter "Telephone" and click on the search button
+then the resulting page will include "Alexander Graham Bell"

@@ -7,10 +7,11 @@ def generate_board():
             assert 0 < difficulty_level < 4
             break
         except ValueError:
-            print("\nInvalid input! Please enter a valid number.")
+            display_error_message("non_numeric")
         except AssertionError:
-            print("\nThe number should be either 1 or 2 or 3. Please try again.")
-    
+            display_error_message("invalid_difficulty")
+
+            
     difficulty_level = 0.25 * difficulty_level
     puzzle = Sudoku(3).difficulty(difficulty_level)
     board = puzzle.board
@@ -75,55 +76,57 @@ def values_print(board):
         print()
 
 def validation(board):
-    """Function to validate user input and update the board."""
+    """Mock function to simulate user input and update the board."""
     while True:
         try:
             row = int(input("Enter the row (1-9): ")) - 1
             col = int(input("Enter the column (1-9): ")) - 1
-            assert 0 <= row < 9 and 0 <= col < 9
+            if not (0 <= row < 9) or not (0 <= col < 9):
+                raise ValueError("Invalid range! Please enter numbers within the correct range.")
             if board[row][col] != 0:
                 print("The cell is already filled. Please choose an empty cell.")
-                continue
+                return
             break
-        except ValueError:
-            print("Invalid input! Please enter valid numbers.")
-        except AssertionError:
-            print("Invalid range! Please enter numbers within the correct range.")
+        except ValueError as e:
+            display_error_message("invalid_move")
+            print(e)
 
     attempts = 0
     while attempts < 3:
         try:
             num = int(input("Enter the number (1-9): "))
-            assert 1 <= num <= 9
+            if not (1 <= num <= 9):
+                raise ValueError("Invalid range! Please enter numbers within the correct range.")
             possible_numbers = numbers_possible(board, row, col)
             if num not in possible_numbers:
-                print(f"Invalid number. It violates the Sudoku rules because: {generate_reason(num, board, row, col)}. Try another number.")
+                print(f"Invalid number. It violates the Sudoku rules because: {generate_reason(num, board, row, col)}")
                 attempts += 1
                 continue
             board[row][col] = num
+            print("Board updated!")
             print_board(board)
             return
-        except ValueError:
-            print("Invalid input! Please enter valid numbers.")
-        except AssertionError:
-            print("Invalid range! Please enter numbers within the correct range.")
-        attempts += 1
+        except ValueError as e:
+            display_error_message("invalid_move")
+            print(e)
+            attempts += 1
 
     if attempts == 3:
         possible_numbers = numbers_possible(board, row, col)
-        print("Here is a hint. The possible numbers for this cell are: ", possible_numbers)
-        print("Reason: ", generate_hint_reason(possible_numbers, board, row, col))
+        print("Here is a hint. The possible numbers for this cell are:", possible_numbers)
+        print("Reason:", generate_hint_reason(possible_numbers, board, row, col))
         while True:
             try:
                 hint_choice = int(input(f"Enter one of the possible numbers {possible_numbers}: "))
                 if hint_choice in possible_numbers:
                     board[row][col] = hint_choice
+                    print("Board updated with a hint!")
                     print_board(board)
                     return
                 else:
                     print("Invalid choice. Please choose one of the hinted numbers.")
             except ValueError:
-                print("Invalid input! Please enter a valid number.")
+                display_error_message("non_numeric")
 
 def generate_reason(num, board, row, col):
     reasons = []
@@ -136,6 +139,7 @@ def generate_reason(num, board, row, col):
         reasons.append(f"the number {num} is already in the same 3x3 grid.")
     return " and ".join(reasons)
 
+
 def generate_hint_reason(possible_numbers, board, row, col):
     return f"The possible numbers are valid because they do not repeat in the same row, column, or 3x3 grid."
     print("The possible values for each cell:")
@@ -145,6 +149,25 @@ def generate_hint_reason(possible_numbers, board, row, col):
                 Values=numbers_possible(board,Row,Column)
                 print(f"Cell({Row+1},{Column+1}): {Values}")
 
+def display_error_message (error_type):
+    """Function to display an error message based on the error type"""
+    if error_type == "invalid_range1":
+        print("Invalid input! Please enter either 1 or 2")
+    elif error_type == "invalid_range":
+        print("Invaild input! Please enter a valid number (1-9)")
+    elif error_type == "non_numeric":
+        print("Invalid input! Please enter a valid number.")
+    elif error_type == "invalid_difficulty":
+        print("Invalid input! Please enter a valid difficulty level (1, 2, or 3).")
+    elif error_type == "invalid_board_format":
+        print("Invalid input! Each row must contain exactly 9 characters, either digits or '.'.")
+    elif error_type == "invalid_move":
+        print("Invalid number. It violates Sudoku rules. Please choose another number.")
+    else:
+        print("Invalid input! Please enter a valid input.")
+
+    
+
 def main():
     """Main function."""
     while True:
@@ -153,9 +176,9 @@ def main():
             assert 0 < userChoice < 3
             break
         except ValueError:
-            print("\nInvalid input! Please enter a valid number.")
+           display_error_message("non_numeric")
         except AssertionError:
-            print("\nThe number should be either 1 or 2. Please try again.")
+            display_error_message("invalid_range1")
             
     if userChoice == 1:
         board = get_board()
@@ -173,9 +196,10 @@ def main():
                 else:
                     break
             except ValueError:
-                print("\nInvalid input! Please enter a valid number.")
+                display_error_message("non_numeric")
             except AssertionError:
-                print("\nThe number should be either 1 or 2. Please try again.")
+                display_error_message("invalid_range1")
+
 
 if __name__ == "__main__":
     main()

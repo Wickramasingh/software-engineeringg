@@ -1,0 +1,21 @@
+Feature: check inventors on invention pages
+
+  Scenario: look for Bell on Telephone page
+     Given we have navigated to the wikipedia main page
+      When we enter "Telephone" and click on the search button
+      Then the resulting page will include "Alexander Graham Bell"
+
+  Scenario: look for Bardeen on Transistor page
+     Given we have navigated to the wikipedia main page
+      When we enter "Transistor" and click on the search button
+      Then the resulting page will include "Bardeen"
+
+  Scenario: look for Edison on Light Bulb page
+     Given we have navigated to the wikipedia main page
+      When we enter "Light Bulb" and click on the search button
+      Then the resulting page will include "Edison"
+
+  Scenario: look for Edison on Phonograph page
+     Given we have navigated to the wikipedia main page
+      When we enter "Phonograph" and click on the search button
+      Then the resulting page will include "Edison"
